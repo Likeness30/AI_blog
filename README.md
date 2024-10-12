@@ -53,13 +53,13 @@ Install dependencies:
 ```
 ## Set up your environment variables: Create a .env file and configure the following:
 
-SECRET_KEY (Django secret key)
-DATABASE_URL (PostgreSQL database connection)
-ASSEMBLYAI_API_KEY (API key for transcription)
-OPENAI_API_KEY (API key for blog generation)
+* SECRET_KEY (Django secret key)
+* DATABASE_URL (PostgreSQL database connection)
+* ASSEMBLYAI_API_KEY (API key for transcription)
+* OPENAI_API_KEY (API key for blog generation)
 
 
-Run migrations:
+## Run migrations:
 ````python manage.py migrate
 ```
 Start the development server:
@@ -75,7 +75,7 @@ python manage.py runserver
 * Click Generate Blog Post and let the AI-powered tools handle the rest.
 * Review the generated post in the "All Blog Posts" section.
 
-Testing
+## Testing
 To run tests:
 ```
 python manage.py test
