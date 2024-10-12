@@ -60,9 +60,10 @@ Install dependencies:
 
 
 ## Run migrations:
-````python manage.py migrate
 ```
-Start the development server:
+python manage.py migrate
+```
+## Start the development server:
 ```
 python manage.py runserver
 ```
