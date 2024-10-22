@@ -21,13 +21,13 @@ Assembly AI API: For converting video audio to text.
 OpenAI API: For generating well-structured blog content from the transcription.
 
 ## Deployment:
-* AWS (Qovery): Cloud infrastructure for managing and deploying the application.
+* AWS (Heroku): Cloud infrastructure for managing and deploying the application.
 
 ## Getting Started
 * Prerequisites
 * Python 3.x
 * Django
-* PostgreSQL
+* PostgreSQL 
 * Assembly AI API Key
 * OpenAI API Key
 * Node.js and npm (for frontend assets)
