@@ -1,18 +1,26 @@
-# AI Blog Generator
+# AI Blog Creator
 ## Overview
-* The AI Blog Generator is a web application that automatically converts YouTube videos into blog posts. By utilizing cutting-edge AI models for transcription and content generation, the app enables users to input YouTube video links and receive well-structured blog posts in return.
+* The AI Blog Creator is a web application that automatically converts YouTube videos into blog posts. By utilizing cutting-edge AI models for transcription and content generation, the app enables users to input YouTube video links and receive well-structured blog posts in return.
 
 ## Features
 * AI-Powered Transcription: Converts YouTube video audio into text.
-* Blog Post Generation: Automatically creates a blog post from the transcribed text.
+* Blog Post Creation: Automatically creates a blog post from the transcribed text.
 * User Authentication: Secure login and signup system for users.
-* Responsive UI: Frontend built with HTML, CSS, and Tailwind for a clean and user-friendly experience.
+* Responsive UI: Frontend built with HTML, CSS, Font-Awesome, and Tailwind for a clean and user-friendly experience.
 
 ## Technologies Used
 ## Frontend:
 * HTML & CSS: For structuring and styling web pages.
 * Tailwind CSS: For responsive and modern UI components.
+* Font-Awesome: Icon library used for UI elements like the password visibility toggle.
 * JavaScript: Enhances interactivity on the frontend.
+
+## Setup
+To use Font-Awesome for icons in this project, include the following CDN link in the <head> section of your HTML file:
+```
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+```
+This will enable the use of icons like the password visibility eye (<i class="fas fa-eye"></i>) in my application.
 
 Backend:
 Django: A robust web framework for handling user requests, authentication, and API integration.
@@ -34,7 +42,7 @@ OpenAI API: For generating well-structured blog content from the transcription.
 
 ## Installation
 * Clone the repository:
-```git clone https://github.com/your-username/ai-blog-generator.git
+```git clone https://github.com/Likeness30/AI_blog.git
 ```
 ```
 cd ai-blog-generator
