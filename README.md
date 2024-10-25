@@ -22,11 +22,11 @@ To use Font-Awesome for icons in this project, include the following CDN link in
 ```
 This will enable the use of icons like the password visibility eye (<i class="fas fa-eye"></i>) in my application.
 
-Backend:
-Django: A robust web framework for handling user requests, authentication, and API integration.
-PostgreSQL: Database management for storing user data and blog posts.
-Assembly AI API: For converting video audio to text.
-OpenAI API: For generating well-structured blog content from the transcription.
+## Backend:
+* Django: A robust web framework for handling user requests, authentication, and API integration.
+* PostgreSQL: Database management for storing user data and blog posts.
+* Assembly AI API: For converting video audio to text.
+* OpenAI API: For generating well-structured blog content from the transcription.
 
 ## Deployment:
 * AWS (Heroku): Cloud infrastructure for managing and deploying the application.
@@ -81,7 +81,7 @@ python manage.py runserver
 ## Usage
 * Sign up or log in.
 * Enter a YouTube video link.
-* Click Generate Blog Post and let the AI-powered tools handle the rest.
+* Click Create Blog Post and let the AI-powered tools handle the rest.
 * Review the generated post in the "All Blog Posts" section.
 
 ## Testing
