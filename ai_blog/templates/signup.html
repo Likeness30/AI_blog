@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+
+    <!-- Favicon Link -->
+    <link rel="icon"  href="favicon.png" type="image/png">
+ <!-- Button -->
+ <title> Button Hover Effect</title>
+ <style>
+ body {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+ }
+ 
+         .button-container {
+             position: fixed;
+             top: 10px;
+             right: 10px;
+             display: flex;
+             gap: 10px;
+         }
+ 
+         .button {
+             padding: 10px 20px;
+             font-size: 16px;
+             border: none;
+             border-radius: 5px;
+             cursor: pointer;
+             transition: transform 0.3s, box-shadow 0.3s;
+             display: inline-flex;
+             align-items: center;
+             justify-content: center;
+             background: #00008B;
+             color: #fff;
+         }
+ 
+         .button:hover {
+             transform: scale(1.1);
+             box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
+         }
+ </style>
+
+    <!-- Tailwind Link -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-grey-100 font-sans antialiased">
+     <!-- Navbar -->
+     <nav class="bg-blue-600 p-4 text-white flex justify-between">
+        <div>
+            <a href="#"h1 class="text-3xl font-bold">AI Blog Creator</h1></a>
+            </div>
+        <div class="button-container">
+            <a href="login" button class="button signup">Login</button></a>
+            <a href="signup" button class="button Login">Signup</button></a>
+        </div>
+    </nav>
+    
+    <br>
+    <!-- Main Content -->
+     <div class="flex items-center justify-center h-screen">
+        <div class="bg-white p-8 shadow-md rounded-lg max-w-md w-full">
+
+            <!-- Sign up form -->
+             <form class="space-y-4" action="" method="POST">
+                {% csrf_token %}
+
+                {% if error_message %}
+                    <div align="center" style="color: red;">
+                        <h2>
+                            {{ erro_message }}
+                        </h2>
+                    </div>
+                {% endif %}
+                <h2 class="text-xl font-semibold">Sign up</h2>
+                <div>
+                    <label for="username" class="block-mb-1 font-medium">Username</label>
+                    <input class="text" id="username" name="username" placeholder="Enter your username..." class="w-full p-2 border rounded">
+                </div>
+
+                <div>
+                    <label for="email" class="block-mb-1 font-medium">Email</label>
+                    <input class="email" id="email" name="email" placeholder="Enter your email..." class="w-full p-2 border rounded">
+                    
+                </div>
+
+                <div style="position: relative;">
+                    <label for="password" class="block mb-1 font-medium">Password</label>
+                    <div class="relative">
+                        <input type="password" id="password" name="password" placeholder="Enter your password" class="w-full p-2 border rounded">
+                        <span toggle="#password" class="fas fa-eye toggle-password absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"></span>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="repeatPassword" class="block mb-1 font-medium">Repeat Password</label>
+                    <div class="relative">
+                        <input type="password" id="repeatPassword" name="repeatPassword" placeholder="Repeat your password" class="w-full p-2 border rounded">
+                        <span toggle="#repeatPassword" class="fas fa-eye toggle-password absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Signup</button>
+            </form>
+
+        </div>
+
+     </div>
+
+     <script>
+        document.querySelectorAll('.toggle-password').forEach(item => {
+            item.addEventListener('click', function () {
+                const input = document.querySelector(this.getAttribute('toggle'));
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.classList.remove('fa-eye');
+                    this.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    this.classList.remove('fa-eye-slash');
+                    this.classList.add('fa-eye');
+                }
+            });
+        });
+    </script>
+    
+</body>
+</html>
