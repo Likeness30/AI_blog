@@ -53,11 +53,13 @@ body {
     <!-- Navbar -->
     <nav class="bg-blue-600 p-4 text-white flex justify-between">
         <div>
-		<a href="#" h1 class="text-3xl font-bold">AI Blog Generator</h1></a>
+		<a href="#" h1 class="text-3xl font-bold">AI Blog Creator</h1></a>
         </div>
-        <!-- <div>
-            <a href="#" class="text-white hover:underline">logout</a>
-	</div> -->
+        <div class="button-container">
+            <a href="logout" class="button">Welcome {{user.username}}</a>
+            <a href="/blog-list" class="button">Saved Blog Posts</a>
+            <a href="#" class="button">Logout</a>
+	</div>
 	<div>
 		<a href="#" button class="button Login">Log Out</button></a>
 	</div>
@@ -68,17 +70,18 @@ body {
         <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
 
             <!-- Blog posts section -->
-             <section>
+            <section>
                 <h2 class="text-xl mb-4 font-semibold">All Blog Posts</h2>
                 <div class="space-y-4">
-                    <div class="border border-grey-300 p-4 rounded-lg">
-                        <h3 class="text-lg font-semibold">Blog Post Tittle 1</h3>
-                        <p>This is the content of the blog post. Lorem ipsun dolor sit ament...</p>
-                    </div>
-                    <div class="border border-grey-300 p-4 rounded-lg">
-                        <h3 class="text-lg font-semibold">Blog Post Tittle 1</h3>
-                        <p>This is the content of the blog post. Lorem ipsun dolor sit ament...</p>
-                    </div>
+                    
+                    {% for article in blog_articles reversed %}
+                    <a href="blog-details/{{article.id}}">
+                        <div class="border border-gray-300 p-4 rounded-lg">
+                            <h3 class="text-lg font-semibold">{{article.youtube_title}}</h3>
+                            <p>{{article.generated_content|truncatechars:80}}</p>
+                        </div>
+                    </a>
+                    {% endfor %}
                     <!-- Repeat -->
                 </div>
              </section>
