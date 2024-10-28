@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from dotenv import load_dotenv
 import json
 from pytube import YouTube
 from django.conf import settings
@@ -11,7 +12,12 @@ import os
 import assemblyai as aai
 import openai
 from .models import BlogPost
+import yt_dlp as y
 
+
+load_dotenv()
+ASSEMBLY_AI_KEY = os.getenv("ASSEMBLY_AI_KEY")
+OPEN_AI_KEY = os.getenv("OPEN_AI_KEY")
 # Create your views here.
 @login_required
 def index(request):
@@ -24,73 +30,120 @@ def generate_blog(request):
             data = json.loads(request.body)
             yt_link = data['link']
 
-        except(KeyError, json.JSONDecodeError):
-            return JsonResponse({'error': 'Invalid data sent' }, status=400)
-        
-        # get yt tittle
-        title = yt_title(yt_link)
-        
-        # get transcript
-        transcription = get_transcription(yt_link)
-        if not transcription:
-            return JsonResponse({'error': " Failed to get transcript"}, status=500)
-        
-        # use openAI to generate the blog content
-        blog_content = generate_blog_from_transcription(transcription)
-        if not blog_content:
-            return JsonResponse({'error': " Failed to generate blog article"}, status=500)
-        
-        # save blog article to database
-        new_blog_article = BlogPost.objects.create(
-            user=request.user,
-            youtube_title=title,
-            youtube_link=yt_link,
-            generated_content=blog_content,
-        )
-        new_blog_article.save()
-        
-        # return blog article as a response
-        return JsonResponse({'content': blog_content})
-    else:
-        return JsonResponse({'error': 'Invalid request method' }, status=405)
-        
-def yt_title(link):
-    yt = YouTube(link)
-    title = yt.title
-    return title
+            # Attempt to download audio
+            downloaded = download_audio(yt_link)
+            if downloaded is None:
+                return JsonResponse({"error": "Failed to download audio"}, status=500)
 
-def download_audio(link):
-    yt = YouTube(link)
-    video = yt.streams.filter(only_audio=True).first()
-    out_file = video.download(output_path=settings.MEDIA_ROOT)
-    base, ext = os.path.splitext(out_file)
-    new_file = base + '.mp3'
-    os.rename(out_file, new_file)
-    return new_file
+            audio_path = downloaded
+            print(f"Audio downloaded at: {audio_path}")
+
+            # Get transcription
+            transcription = get_transcription(audio_path)
+            if not transcription:
+                return JsonResponse({'error': "Failed to get transcript"}, status=500)
+
+            print('Transcription done')
+
+            # Use OpenAI to generate the blog content
+            blog_content = generate_blog_from_transcription(transcription)
+            if not blog_content:
+                return JsonResponse({'error': "Failed to generate blog article"}, status=500)
+
+            # Save blog article to database
+            new_blog_article = BlogPost.objects.create(
+                user=request.user,
+                youtube_title=yt_link.split('v=')[-1],
+                youtube_link=yt_link,
+                generated_content=blog_content,
+            )
+            new_blog_article.save()
+            print('Blog article saved successfully.')
+
+            # Return blog article as a response
+            return JsonResponse({'content': blog_content})
+
+        except KeyError as e:
+            print(f"KeyError: {e}")
+            return JsonResponse({'error': 'Invalid data sent'}, status=400)
+        except json.JSONDecodeError:
+            print("JSONDecodeError: Invalid JSON")
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            return JsonResponse({'error': 'An unexpected error occurred'}, status=500)
+
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+def download_audio(url):
+    output_path = 'media'
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'outtmpl': os.path.join(output_path, '%(title)s.%(ext)s'),
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3', 
+            'preferredquality': '192',
+        }],
+        'socket_timeout': 60,
+        'retries': 10,
+        'noplaylist': True,
+        'quiet': False,
+    }
+
+    try:
+        with y.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url])
+            info_dict = ydl.extract_info(url, download=False)
+            audio_path = os.path.join(output_path, f"{info_dict['title']}.mp3")
+        return audio_path
+
+    except y.utils.DownloadError as e:
+        print(f"Download error: {e}")
+        return None
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return None
 
 def get_transcription(link):
-    audio_file = download_audio(link)
-    aai.settings.api_key = ""
+    # audio_file = download_audio(link)
+    aai.settings.api_key = ASSEMBLY_AI_KEY
     
     transcriber = aai.Transcriber()
-    transcript = transcriber.transcribe(audio_file)
+    transcript = transcriber.transcribe(link)
     
-    return transcript.text
+    if transcript.status == aai.TranscriptStatus.error:
+        return(transcript.error)
+    else:
+        return(transcript.text)
 
 def generate_blog_from_transcription(transcription):
-    openai.api_key = ""
-    
-    prompt = f"Based on the following transcript from a YouTube video, write a comprehensive blog article, write it based on the transcript, but dont make it look like a youtube video, make it look like a proper blog article:\n\n{transcription}\n\nArticle:"
-    
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=prompt,
-        max_tokens=1000
-    )
+    openai.api_key = OPEN_AI_KEY
 
-    generated_content = response.choices[0].text.strip()
+    prompt = prompt = f"Based on the following transcript from a YouTube video, write a comprehensive blog article, write it based on the transcript, but dont make it look like a youtube video, make it look like a proper blog article:\n\n{transcription}\n\nArticle:"
 
-    return generated_content
+    try:
+        # New API call for ChatCompletion
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that writes blog articles based on transcripts."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=1000
+        )
+
+        blog_content = response['choices'][0]['message']['content']
+        return blog_content
+    
+    except Exception as e:
+        print(f"Error while generating blog content: {e}")
+        return None
+
 
 def blog_list(request):
     blog_articles = BlogPost.objects.filter(user=request.user)
