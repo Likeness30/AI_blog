@@ -110,7 +110,6 @@ def download_audio(url):
         return None
 
 def get_transcription(link):
-    # audio_file = download_audio(link)
     aai.settings.api_key = ASSEMBLY_AI_KEY
     
     transcriber = aai.Transcriber()
