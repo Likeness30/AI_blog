@@ -45,7 +45,7 @@ This will enable the use of icons like the password visibility eye (<i class="fa
 ```git clone https://github.com/Likeness30/AI_blog.git
 ```
 ```
-cd ai-blog-generator
+cd ai_blog
 ```
 Set up a virtual environment:
 ```
@@ -69,11 +69,11 @@ Install dependencies:
 
 ## Run migrations:
 ```
-python manage.py migrate
+python3 manage.py migrate
 ```
 ## Start the development server:
 ```
-python manage.py runserver
+python3 manage.py runserver
 ```
 ## Frontend
 * The frontend is built using Tailwind CSS and provides a responsive user interface for user login, signup, and generating blog posts.
@@ -87,6 +87,6 @@ python manage.py runserver
 ## Testing
 To run tests:
 ```
-python manage.py test
+python3 manage.py test
 ```
 
